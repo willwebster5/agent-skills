@@ -1,0 +1,13 @@
+{
+  "name": "willwebster5-agent-skills",
+  "owner": {
+    "name": "Will Webster",
+    "email": ""
+  },
+  "metadata": {
+    "description": "A collection of Claude Code skills and plugins by Will Webster",
+    "version": "0.1.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": []
+}
