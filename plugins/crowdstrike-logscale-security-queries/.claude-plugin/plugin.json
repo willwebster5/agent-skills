@@ -1,0 +1,11 @@
+{
+  "name": "crowdstrike-logscale-security-queries",
+  "version": "0.1.0",
+  "description": "Develop, optimize, and troubleshoot CrowdStrike LogScale security detection queries using CQL — includes case statements, multi-event correlation, investigation playbooks, and hunting rules.",
+  "author": {
+    "name": "Will Webster"
+  },
+  "repository": "https://github.com/willwebster5/agent-skills",
+  "license": "MIT",
+  "keywords": ["crowdstrike", "logscale", "cql", "detections", "hunting", "security"]
+}

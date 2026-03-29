@@ -1,13 +1,83 @@
 {
   "name": "willwebster5-agent-skills",
   "owner": {
-    "name": "Will Webster",
-    "email": ""
+    "name": "Will Webster"
   },
   "metadata": {
     "description": "A collection of Claude Code skills and plugins by Will Webster",
     "version": "0.1.0",
     "pluginRoot": "./plugins"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "crowdstrike-soc",
+      "source": "./plugins/crowdstrike-soc",
+      "description": "Unified SOC analyst workflow — triage, investigate, hunt, tune, and manage cases",
+      "keywords": ["crowdstrike", "soc", "triage", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-soc-agents",
+      "source": "./plugins/crowdstrike-soc-agents",
+      "description": "Agent-delegated SOC workflow — distributes work across specialized sub-agents",
+      "keywords": ["crowdstrike", "soc", "agents", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-logscale-security-queries",
+      "source": "./plugins/crowdstrike-logscale-security-queries",
+      "description": "Develop and troubleshoot CQL security detection queries for LogScale",
+      "keywords": ["crowdstrike", "logscale", "cql", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-detection-tuning",
+      "source": "./plugins/crowdstrike-detection-tuning",
+      "description": "Tune NGSIEM detections for false positive reduction with 38 enrichment functions",
+      "keywords": ["crowdstrike", "detections", "tuning", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-behavioral-detections",
+      "source": "./plugins/crowdstrike-behavioral-detections",
+      "description": "Design multi-event behavioral detection rules using correlate()",
+      "keywords": ["crowdstrike", "detections", "behavioral", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-cql-patterns",
+      "source": "./plugins/crowdstrike-cql-patterns",
+      "description": "Curated CQL detection engineering pattern catalog for NG-SIEM",
+      "keywords": ["crowdstrike", "cql", "patterns", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-fusion-workflows",
+      "source": "./plugins/crowdstrike-fusion-workflows",
+      "description": "Build Falcon Fusion SOAR workflows — discover actions, author YAML, validate",
+      "keywords": ["crowdstrike", "fusion", "soar", "automation"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-response-playbooks",
+      "source": "./plugins/crowdstrike-response-playbooks",
+      "description": "Detection-to-response mapping and SOAR playbook design with tiered response actions",
+      "keywords": ["crowdstrike", "response", "soar", "playbooks", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-source-threat-modeling",
+      "source": "./plugins/crowdstrike-source-threat-modeling",
+      "description": "Threat-model-first detection planning for data sources without OOTB coverage",
+      "keywords": ["crowdstrike", "threat-modeling", "detections", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-threat-hunting",
+      "source": "./plugins/crowdstrike-threat-hunting",
+      "description": "Autonomous PEAK-framework threat hunting against CrowdStrike NG-SIEM",
+      "keywords": ["crowdstrike", "threat-hunting", "peak", "security"],
+      "category": "security"
+    }
+  ]
 }

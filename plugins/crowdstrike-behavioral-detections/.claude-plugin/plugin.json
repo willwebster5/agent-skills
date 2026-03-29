@@ -1,0 +1,11 @@
+{
+  "name": "crowdstrike-behavioral-detections",
+  "version": "0.1.0",
+  "description": "Design multi-event behavioral detection rules using CrowdStrike NG-SIEM correlate() function for attack chain detections across AWS, EntraID, and CrowdStrike data sources.",
+  "author": {
+    "name": "Will Webster"
+  },
+  "repository": "https://github.com/willwebster5/agent-skills",
+  "license": "MIT",
+  "keywords": ["crowdstrike", "ngsiem", "detections", "behavioral", "correlate", "security"]
+}
