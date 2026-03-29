@@ -1,0 +1,11 @@
+{
+  "name": "crowdstrike-fusion-workflows",
+  "version": "0.1.0",
+  "description": "Build CrowdStrike Falcon Fusion SOAR workflows — discover actions via live API, author YAML, validate locally, and deploy automation playbooks.",
+  "author": {
+    "name": "Will Webster"
+  },
+  "repository": "https://github.com/willwebster5/agent-skills",
+  "license": "MIT",
+  "keywords": ["crowdstrike", "fusion", "soar", "workflows", "automation", "security"]
+}

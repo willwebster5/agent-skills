@@ -1,6 +1,6 @@
 # agent-skills
 
-A Claude Code plugin marketplace — a collection of skills and plugins for Claude Code.
+A Claude Code plugin marketplace — a collection of CrowdStrike security skills and plugins.
 
 ## Installation
 
@@ -18,42 +18,27 @@ Then browse and install available plugins:
 
 ## Available Plugins
 
-*No plugins yet — check back soon.*
+### SOC Operations
 
-## Adding a Plugin
+| Plugin | Description |
+|--------|-------------|
+| `crowdstrike-soc` | Unified SOC analyst workflow — triage alerts, investigate, hunt threats, tune detections, manage cases |
+| `crowdstrike-soc-agents` | Agent-delegated SOC workflow — distributes triage and investigation across specialized sub-agents |
 
-Each plugin lives in its own directory under `plugins/`:
+### Detection Engineering
 
-```
-plugins/
-└── my-plugin/
-    ├── .claude-plugin/
-    │   └── plugin.json
-    └── skills/
-        └── my-skill/
-            └── SKILL.md
-```
+| Plugin | Description |
+|--------|-------------|
+| `crowdstrike-logscale-security-queries` | Develop and troubleshoot CQL security detection queries for LogScale |
+| `crowdstrike-detection-tuning` | Tune NGSIEM detections for false positive reduction with 38 enrichment functions |
+| `crowdstrike-behavioral-detections` | Design multi-event behavioral detection rules using `correlate()` |
+| `crowdstrike-cql-patterns` | Curated CQL detection engineering pattern catalog for NG-SIEM |
 
-### Plugin manifest (`plugin.json`)
+### Automation
 
-```json
-{
-  "name": "my-plugin",
-  "description": "What this plugin does",
-  "version": "0.1.0"
-}
-```
-
-### Skill file (`SKILL.md`)
-
-```markdown
----
-name: my-skill
-description: When and how to use this skill
----
-
-Skill instructions go here.
-```
+| Plugin | Description |
+|--------|-------------|
+| `crowdstrike-fusion-workflows` | Build Falcon Fusion SOAR workflows — discover actions, author YAML, validate |
 
 ## License
 

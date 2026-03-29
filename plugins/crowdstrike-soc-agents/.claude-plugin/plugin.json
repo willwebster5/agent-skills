@@ -1,0 +1,11 @@
+{
+  "name": "crowdstrike-soc-agents",
+  "version": "0.1.0",
+  "description": "Agent-delegated SOC workflow for CrowdStrike NGSIEM — distributes triage, investigation, and evidence collection across specialized sub-agents (Haiku for mechanical, Sonnet for substantive, Opus for judgment).",
+  "author": {
+    "name": "Will Webster"
+  },
+  "repository": "https://github.com/willwebster5/agent-skills",
+  "license": "MIT",
+  "keywords": ["crowdstrike", "soc", "ngsiem", "agents", "triage", "security"]
+}

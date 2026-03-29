@@ -1,0 +1,11 @@
+{
+  "name": "crowdstrike-soc",
+  "version": "0.1.0",
+  "description": "Unified SOC analyst workflow for CrowdStrike NGSIEM — triage alerts, investigate security events, hunt threats, tune detections, and manage cases through a phased lifecycle.",
+  "author": {
+    "name": "Will Webster"
+  },
+  "repository": "https://github.com/willwebster5/agent-skills",
+  "license": "MIT",
+  "keywords": ["crowdstrike", "soc", "ngsiem", "triage", "alerts", "hunting", "security"]
+}
