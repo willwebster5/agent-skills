@@ -57,6 +57,27 @@
       "description": "Build Falcon Fusion SOAR workflows — discover actions, author YAML, validate",
       "keywords": ["crowdstrike", "fusion", "soar", "automation"],
       "category": "security"
+    },
+    {
+      "name": "crowdstrike-response-playbooks",
+      "source": "./plugins/crowdstrike-response-playbooks",
+      "description": "Detection-to-response mapping and SOAR playbook design with tiered response actions",
+      "keywords": ["crowdstrike", "response", "soar", "playbooks", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-source-threat-modeling",
+      "source": "./plugins/crowdstrike-source-threat-modeling",
+      "description": "Threat-model-first detection planning for data sources without OOTB coverage",
+      "keywords": ["crowdstrike", "threat-modeling", "detections", "security"],
+      "category": "security"
+    },
+    {
+      "name": "crowdstrike-threat-hunting",
+      "source": "./plugins/crowdstrike-threat-hunting",
+      "description": "Autonomous PEAK-framework threat hunting against CrowdStrike NG-SIEM",
+      "keywords": ["crowdstrike", "threat-hunting", "peak", "security"],
+      "category": "security"
     }
   ]
 }

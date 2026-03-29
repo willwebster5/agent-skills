@@ -34,11 +34,19 @@ Then browse and install available plugins:
 | `crowdstrike-behavioral-detections` | Design multi-event behavioral detection rules using `correlate()` |
 | `crowdstrike-cql-patterns` | Curated CQL detection engineering pattern catalog for NG-SIEM |
 
-### Automation
+### Threat Intelligence & Hunting
+
+| Plugin | Description |
+|--------|-------------|
+| `crowdstrike-threat-hunting` | Autonomous PEAK-framework threat hunting against NG-SIEM — hypothesis, intelligence, and baseline hunts |
+| `crowdstrike-source-threat-modeling` | Threat-model-first detection planning for data sources without OOTB coverage |
+
+### Automation & Response
 
 | Plugin | Description |
 |--------|-------------|
 | `crowdstrike-fusion-workflows` | Build Falcon Fusion SOAR workflows — discover actions, author YAML, validate |
+| `crowdstrike-response-playbooks` | Detection-to-response mapping and SOAR playbook design with tiered response actions |
 
 ## License
 

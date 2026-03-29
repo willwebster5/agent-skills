@@ -1,0 +1,11 @@
+{
+  "name": "crowdstrike-threat-hunting",
+  "version": "0.1.0",
+  "description": "Autonomous threat hunting using the PEAK framework — hypothesis-driven, intelligence-driven, and baseline hunts against CrowdStrike NG-SIEM with hunt reports and detection backlogs.",
+  "author": {
+    "name": "Will Webster"
+  },
+  "repository": "https://github.com/willwebster5/agent-skills",
+  "license": "MIT",
+  "keywords": ["crowdstrike", "threat-hunting", "peak", "ngsiem", "security"]
+}

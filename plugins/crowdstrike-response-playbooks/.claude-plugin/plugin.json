@@ -1,0 +1,11 @@
+{
+  "name": "crowdstrike-response-playbooks",
+  "version": "0.1.0",
+  "description": "Detection-to-response mapping and SOAR playbook design — analyzes detections, recommends tiered response actions, and produces handoff docs for Falcon Fusion workflow generation.",
+  "author": {
+    "name": "Will Webster"
+  },
+  "repository": "https://github.com/willwebster5/agent-skills",
+  "license": "MIT",
+  "keywords": ["crowdstrike", "response", "soar", "playbooks", "automation", "security"]
+}
