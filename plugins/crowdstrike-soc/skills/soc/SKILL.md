@@ -203,14 +203,22 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
      - `cwpp:` — Cloud Workload Protection findings (container image scans)
      - `automated-lead:` — Charlotte AI automated investigation (parent lead)
 
-2. **Call `alert_analysis`** — `mcp__crowdstrike__alert_analysis(detection_id=<id>, max_events=20)`.
+2. **Check for ADS metadata** — If the alert is from an NGSIEM detection (`ngsiem:` prefix):
+   - Find the detection template in `resources/detections/` by matching the detection name
+   - If the template has an `ads:` block:
+     - If `ads.goal` exists, use it to frame the investigation context: "This detection is designed to identify: *<goal>*"
+     - If `ads.technical_context` exists, use it for field selection and enrichment guidance instead of guessing field names
+     - If `ads.blind_spots` exists, note the limitations during evidence collection — these are known gaps to account for
+   - If no `ads:` block, proceed with standard investigation (parse CQL to understand detection intent)
 
-3. **Run investigation queries** using patterns from `knowledge/techniques/investigation-techniques.md`:
+3. **Call `alert_analysis`** — `mcp__crowdstrike__alert_analysis(detection_id=<id>, max_events=20)`.
+
+4. **Run investigation queries** using patterns from `knowledge/techniques/investigation-techniques.md`:
    - **Consult the repo mapping table** before writing any CQL query — using the wrong repo returns 0 results silently.
    - **Check field gotchas** before using field names — known traps are documented there.
    - Adapt playbook queries by substituting `{{user}}`, `{{ip}}`, etc. Do NOT guess field names.
 
-4. **Platform-specific enrichment:**
+5. **Platform-specific enrichment:**
 
    **For endpoint alerts (`ind:` prefix):**
    - `host_lookup(device_id=...)` — device posture, containment status
@@ -234,9 +242,9 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
    - `cloud_get_risks(account_id=..., severity="critical")` — account risk posture
    - **CloudTrail visibility gap**: AWS service-initiated actions may not appear in CloudTrail
 
-5. **Collect evidence**: who, what, when, where, how. Apply environmental context from `environmental-context.md`.
+6. **Collect evidence**: who, what, when, where, how. Apply environmental context from `environmental-context.md`.
 
-6. **Present evidence summary** with key IOCs:
+7. **Present evidence summary** with key IOCs:
    ```
    ## Evidence Summary: <alert_name>
    **ID**: <composite_id>
@@ -250,7 +258,7 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
    **Initial Assessment**: <preliminary view based on evidence alone>
    ```
 
-7. **STOP — human reviews evidence before classification.**
+8. **STOP — human reviews evidence before classification.**
 
 ---
 
@@ -261,17 +269,23 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
 
 ### Actions
 
-1. **Compare collected evidence against memory patterns:**
+1. **Check ADS inline false positives** — If the detection template has `ads.false_positives` with inline entries (dicts with `pattern`, `characteristics`, `status` fields):
+   - Compare current alert evidence against each inline FP entry BEFORE loading the full platform pattern file
+   - If evidence matches an inline FP entry with `status: "tuned"`, verify the tuning is still active in the deployed detection
+   - If evidence matches an inline FP entry with `status: "open"`, flag it — this is a known FP that hasn't been tuned yet
+   - String reference entries (e.g., `"-> knowledge/patterns/aws.md#pattern-name"`) are pointers to the full pattern file — load and check those during normal pattern comparison
+
+2. **Compare collected evidence against knowledge patterns:**
    - If evidence matches a known FP pattern: cite the specific pattern AND verify the evidence independently supports it (not just a partial match)
    - If evidence matches a known TP pattern: cite the pattern and assess scope
    - If no match: classify from evidence alone — this is a new pattern
 
-2. **Pattern matching rules:**
+3. **Pattern matching rules:**
    - A partial match (e.g., "same user seen before") is **INSUFFICIENT** — the IOCs must match
    - If the evidence contradicts a memory pattern (e.g., different IP/ASN than documented), **flag the discrepancy** explicitly
    - Memory patterns are **validation**, not shortcuts
 
-3. **Classification Checkpoint — answer ALL FOUR before classifying as FP:**
+4. **Classification Checkpoint — answer ALL FOUR before classifying as FP:**
    1. What specific evidence supports this is benign? (not "it seems like" — cite fields, values, patterns)
    2. Does this match a documented FP pattern in `knowledge/patterns/<platform>.md`? If yes, do the IOCs match exactly?
    3. If this is a new pattern, have you verified with at least one enrichment query? (host_lookup, ngsiem_query, cloud_query_assets)
@@ -279,7 +293,7 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
 
    If you can't answer #1 with specific evidence, classify as **Investigating** and run more queries.
 
-4. **Output Triage Summary:**
+5. **Output Triage Summary:**
    ```
    ## Alert: <name>
    **ID**: <composite_id>
@@ -291,14 +305,14 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
    **Action**: <next step>
    ```
 
-5. **Priority Matrix:**
+6. **Priority Matrix:**
    - **P0**: Active compromise, data exfiltration, or credential theft in progress
    - **P1**: Confirmed threat requiring immediate investigation (within 1 hour)
    - **P2**: Suspicious activity needing same-day investigation
    - **P3**: Low-confidence anomaly, investigate within 48 hours
    - **P4**: Informational, log for trend analysis
 
-6. **STOP — human approves classification before closing.**
+7. **STOP — human approves classification before closing.**
 
 ### If Classification is Inconclusive
 
@@ -403,6 +417,49 @@ After closing (FP or TP), update the appropriate knowledge base files:
 - New hunting query → `knowledge/techniques/investigation-techniques.md`
 - New detection idea → `knowledge/ideas/detection-ideas.md`
 - Update `knowledge/INDEX.md` — refresh platform pattern counts, add to Recent TP Activity if TP
+
+### ADS Backfill (Triage-Driven)
+
+If the detection template **lacks** an `ads:` block, propose a skeleton based on what was learned during triage:
+
+```yaml
+ads:
+  goal: "<inferred from CQL analysis and investigation context>"
+  blind_spots:
+    # Only include if gaps were discovered during investigation
+    - "<limitation discovered>"
+  false_positives:
+    # Only include if this alert was classified as FP
+    - pattern: "<FP pattern observed>"
+      characteristics: "<key IOCs that identify this FP>"
+      status: "open"
+  ads_created: "YYYY-MM-DD"
+  ads_author: "soc-triage backfill"
+```
+
+**Present the proposed skeleton to the user for approval before writing it to the detection template.** Do not auto-write ADS blocks.
+
+### Metrics Append
+
+After every alert closure (FP or TP), append one JSONL line to `knowledge/metrics/detection-metrics.jsonl`:
+
+```json
+{"date":"YYYY-MM-DD","detection":"<detection display name>","resource_id":"<template resource_id>","disposition":"<true_positive|false_positive|tuning_needed|inconclusive>","fp_reason":"<category if FP, else null>","tier":"<fast_track|pattern_match|standard|deep>","est_minutes":<N>,"alert_count":<N>,"case_created":<true|false>,"composite_id":"<full composite ID>"}
+```
+
+**Fields:**
+- `date`: Today's date (ISO format)
+- `detection`: Alert display name from CrowdStrike
+- `resource_id`: Template `resource_id` from `resources/detections/` (if NGSIEM detection; else the detection name)
+- `disposition`: One of `true_positive`, `false_positive`, `tuning_needed`, `inconclusive`
+- `fp_reason`: Category string if FP (e.g., `ci_cd_automation`, `service_account`, `known_scanner`, `config_drift`), otherwise `null`
+- `tier`: Triage depth tier assigned at Phase 1
+- `est_minutes`: Estimated investigation time in minutes
+- `alert_count`: Number of alerts in this batch (for grouped alerts)
+- `case_created`: Whether a case was created for this alert
+- `composite_id`: Full CrowdStrike composite detection ID
+
+Skip metrics append if `knowledge/metrics/detection-metrics.jsonl` does not exist (no knowledge base bootstrapped).
 
 ---
 
