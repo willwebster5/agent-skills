@@ -130,10 +130,10 @@ Route based on invocation:
 
 Load at skill invocation (all hunt types):
 
-1. Read `memory/hunt-log.md` — what hunts have been completed
-2. Read `memory/coverage-map.md` — ATT&CK technique coverage and gaps
-3. Read `.claude/skills/soc/environmental-context.md` — org baselines, known accounts, infrastructure
-4. Read `.claude/skills/soc/memory/investigation-techniques.md` — repo mappings, field gotchas
+1. Read `knowledge/hunts/` directory — scan for existing hunt reports (fallback: `memory/hunt-log.md`)
+2. Read `memory/coverage-map.md` — ATT&CK technique coverage and gaps (stays bundled — reference data, not living data)
+3. Read `knowledge/context/environmental-context.md` — org baselines, known accounts, infrastructure (fallback: `.claude/skills/soc/environmental-context.md`)
+4. Read `knowledge/techniques/investigation-techniques.md` — repo mappings, field gotchas (fallback: `.claude/skills/soc/memory/investigation-techniques.md`)
 
 Load during Prepare phase:
 5. Scan `resources/detections/` for `mitre_attack` fields — existing automated detection coverage
@@ -431,7 +431,9 @@ If no gaps were identified, note that all required data was available — this i
 
 After producing all outputs:
 
-**Hunt log** — append one row to `memory/hunt-log.md`:
+**Hunt log** — Write hunt report to `knowledge/hunts/YYYY-MM-DD-<slug>.md` (one file per hunt). If `knowledge/hunts/` does not exist, fall back to appending to `memory/hunt-log.md`.
+
+Also append one row to the hunt log index:
 
 ```
 | YYYY-MM-DD | <Type> | <Title> | T1234, T5678 | <Outcome> | <N detections proposed> |
