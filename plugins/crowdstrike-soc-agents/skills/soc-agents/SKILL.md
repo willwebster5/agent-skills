@@ -131,10 +131,32 @@ Route based on invocation:
 | `/soc intake` | Phase 1 | Fetch and tier alerts only |
 | `/soc triage <id>` | Phase 2 | Investigate a specific alert |
 | `/soc classify <id>` | Phase 3 | Classify after evidence collection |
-| `/soc close <id> <FP\|TP>` | Phase 4 | Close alert and update memory |
+| `/soc close <id> <FP\|TP>` | Phase 4 | Close alert and update knowledge |
 | `/soc tune <detection>` | Phase 5 | Tune a detection for FPs |
 | `/soc hunt` | Hunt Mode | IOC/hypothesis-driven hunting |
 | `/soc investigate` | Investigate Mode | Operational questions, not alert triage |
+
+## Knowledge Base Bootstrap
+
+At session start, check whether `knowledge/` exists in the working repo:
+
+1. Run `ls knowledge/INDEX.md` to check for the knowledge base
+2. **If `knowledge/` exists:** Use `knowledge/` paths for all living documents (see path table below)
+3. **If `knowledge/` does NOT exist:** Fall back to bundled `memory/` files in the sibling `../soc/` skill directory. Inform the user: "No `knowledge/` directory found — using bundled templates. Run the talonctl knowledge base scaffold to enable persistent knowledge."
+
+### Path Resolution
+
+| Document | Primary Path (`knowledge/` exists) | Fallback Path |
+|---|---|---|
+| Fast-track patterns | `knowledge/INDEX.md` (Fast-Track section) | `../soc/memory/fast-track-patterns.md` |
+| Environmental context | `knowledge/context/environmental-context.md` | `../soc/environmental-context.md` |
+| Investigation techniques | `knowledge/techniques/investigation-techniques.md` | `../soc/memory/investigation-techniques.md` |
+| FP patterns | `knowledge/patterns/<platform>.md` | `../soc/memory/fp-patterns.md` |
+| TP patterns | `knowledge/patterns/<platform>.md` (TP section) | `../soc/memory/tp-patterns.md` |
+| Tuning log | `knowledge/tuning/tuning-log.md` | `../soc/memory/tuning-log.md` |
+| Tuning backlog | `knowledge/tuning/tuning-backlog.md` | `../soc/memory/tuning-backlog.md` |
+| Detection ideas | `knowledge/ideas/detection-ideas.md` | `../soc/memory/detection-ideas.md` |
+| Detection metrics | `knowledge/metrics/detection-metrics.jsonl` | (none — metrics only available with knowledge base) |
 
 ## Triage Depth Tiers
 
@@ -142,7 +164,7 @@ Not every alert needs the same level of investigation. Tiers are assigned during
 
 | Tier | When | What to Do |
 |------|------|-----------|
-| **Fast-track** | Alert matches a pattern in `../soc/memory/fast-track-patterns.md` (CWPP, Charlotte AI, Intune, SASE reconnect) | Bulk close with appropriate tag. No investigation needed. |
+| **Fast-track** | Alert matches a pattern in `knowledge/INDEX.md` (Fast-Track section) (CWPP, Charlotte AI, Intune, SASE reconnect) | Bulk close with appropriate tag. No investigation needed. |
 | **Pattern-match candidate** | Alert resembles a known pattern but needs IOC verification | Brief Phase 2 (verify key IOCs), then Phase 3 to confirm match. |
 | **Standard triage** | Alert needs assessment — likely classifiable from metadata + one enrichment call | Full Phase 2 investigation. Playbook required. |
 | **Deep investigation** | Inconclusive after standard triage, or suspicious indicators present | Full Phase 2 + extended investigation. Playbook mandatory. Cross-source correlation required. |
@@ -152,18 +174,17 @@ Not every alert needs the same level of investigation. Tiers are assigned during
 ## Phase 1: Intake (`/soc daily`, `/soc intake`)
 
 ### Context Loaded
-- Read `../soc/environmental-context.md` — org baselines, known accounts, infrastructure context
-- Read `../soc/memory/fast-track-patterns.md` — high-confidence bulk-close patterns only
+- Read `knowledge/context/environmental-context.md` — org baselines, known accounts, infrastructure context (fallback: `../soc/environmental-context.md`)
+- Read `knowledge/INDEX.md` — routing table with fast-track patterns and platform file index (fallback: `../soc/memory/fast-track-patterns.md`)
 
 ### NOT Loaded (Phase 1 boundary)
-- ~~`../soc/memory/fp-patterns.md`~~ — loaded at Phase 3 only (prevents confirmation bias)
-- ~~`../soc/memory/tp-patterns.md`~~ — loaded at Phase 3 only
-- ~~`../soc/memory/investigation-techniques.md`~~ — loaded at Phase 2 only
-- ~~`../soc/memory/tuning-log.md`~~ — loaded at Phase 5 only
+- ~~`knowledge/patterns/<platform>.md`~~ — loaded at Phase 3 only (prevents confirmation bias)
+- ~~`knowledge/techniques/investigation-techniques.md`~~ — loaded at Phase 2 only
+- ~~`knowledge/tuning/tuning-log.md`~~ — loaded at Phase 5 only
 
 ### Delegation
 
-Dispatch `alert-formatter` agent (Haiku, silent) for steps 2-4 below. Provide `../soc/environmental-context.md` content and `../soc/memory/fast-track-patterns.md` content as inline context, plus the filter parameters. The agent calls `get_alerts`, assigns tiers, and returns a structured summary table. Present the table as your own output (silent agent — user doesn't see the dispatch).
+Dispatch `alert-formatter` agent (Haiku, silent) for steps 2-4 below. Provide `knowledge/context/environmental-context.md` content and `knowledge/INDEX.md` (Fast-Track section) content as inline context, plus the filter parameters. The agent calls `get_alerts`, assigns tiers, and returns a structured summary table. Present the table as your own output (silent agent — user doesn't see the dispatch).
 
 Step 1 (TaskCreate), step 5 (per-alert task creation), and step 6 (human checkpoint) remain orchestrator-only.
 
@@ -182,7 +203,7 @@ If the agent fails, perform steps 2-4 directly.
    - If a specific product filter was requested, only fetch that product
    - CWPP can be fetched separately for bulk close count, but don't pull individual alert details
 
-3. **Assign triage depth tiers** using ONLY `fast-track-patterns.md` and `../soc/environmental-context.md`:
+3. **Assign triage depth tiers** using ONLY `knowledge/INDEX.md` (Fast-Track section) and `knowledge/context/environmental-context.md`:
    - Matches fast-track patterns → **Fast-track**
    - Unknown or partially matching → **Pattern-match candidate**, **Standard**, or **Deep**
    - **Do NOT reference FP memory patterns here** — you don't have them loaded yet, and that's by design
@@ -209,7 +230,7 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
 ## Phase 2: Triage (`/soc triage <id>`)
 
 ### Context Loaded (additive)
-- Read `../soc/memory/investigation-techniques.md` — query patterns, field gotchas, **NGSIEM repo mapping table**, API quirks
+- Read `knowledge/techniques/investigation-techniques.md` — query patterns, field gotchas, **NGSIEM repo mapping table**, API quirks (fallback: `../soc/memory/investigation-techniques.md`)
 - Read the relevant **playbook** from `../soc/playbooks/` based on alert type routing:
   - `thirdparty:` prefix + EntraID source → `../soc/playbooks/entraid-signin-alert.md`
   - `ngsiem:` prefix + EntraID detection name → `../soc/playbooks/entraid-risky-signin.md`
@@ -219,8 +240,7 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
   - For alert types without a playbook, use field schemas from `../soc/playbooks/README.md`
 
 ### NOT Loaded (Phase 2 boundary)
-- ~~`../soc/memory/fp-patterns.md`~~ — **CRITICAL: Do NOT load FP patterns during triage.** You must form an evidence-based assessment independently.
-- ~~`../soc/memory/tp-patterns.md`~~ — loaded at Phase 3 only
+- ~~`knowledge/patterns/<platform>.md`~~ — **CRITICAL: Do NOT load platform pattern files during triage.** You must form an evidence-based assessment independently.
 
 ### Red Flags — STOP if thinking any of these:
 - "This looks like a known FP, I recognize the user/pattern" → **You don't have FP patterns loaded. Investigate the evidence independently.**
@@ -232,7 +252,7 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
 
 Steps 1-2 (extract composite ID, call alert_analysis) remain orchestrator-only. After step 2, delegate investigation queries and evidence collection to agents:
 
-a. **CQL queries**: Dispatch `cql-query` agent (Sonnet, visible). Provide `../soc/memory/investigation-techniques.md` content, the relevant playbook content, alert context, and investigation intent. Announce: "Generating investigation queries..." Agent returns targeted CQL queries. Present queries to user for review/adjustment. (Replaces existing steps 3-4.)
+a. **CQL queries**: Dispatch `cql-query` agent (Sonnet, visible). Provide `knowledge/techniques/investigation-techniques.md` content, the relevant playbook content, alert context, and investigation intent. Announce: "Generating investigation queries..." Agent returns targeted CQL queries. Present queries to user for review/adjustment. (Replaces existing steps 3-4.)
 
 b. **Evidence collection**: Dispatch `mcp-investigator` agent (Sonnet, visible). Provide the alert context and the CQL queries (from cql-query agent or user-adjusted). Announce: "Collecting evidence..." Agent executes read-only MCP calls and returns structured evidence. (Replaces existing steps 4-5.)
 
@@ -256,7 +276,7 @@ If any agent fails, perform that step directly using the existing inline steps 3
 
 2. **Call `alert_analysis`** — `mcp__crowdstrike__alert_analysis(detection_id=<id>, max_events=20)`.
 
-3. **Run investigation queries** using patterns from `../soc/memory/investigation-techniques.md`:
+3. **Run investigation queries** using patterns from `knowledge/techniques/investigation-techniques.md`:
    - **Consult the repo mapping table** before writing any CQL query — using the wrong repo returns 0 results silently.
    - **Check field gotchas** before using field names — known traps are documented there.
    - Adapt playbook queries by substituting `{{user}}`, `{{ip}}`, etc. Do NOT guess field names.
@@ -308,8 +328,7 @@ If any agent fails, perform that step directly using the existing inline steps 3
 ## Phase 3: Classify (`/soc classify <id>`)
 
 ### Context Loaded (additive)
-- Read `../soc/memory/fp-patterns.md` — known FP signatures with IOC details
-- Read `../soc/memory/tp-patterns.md` — known TP indicators
+- Read `knowledge/patterns/<platform>.md` for the relevant platform — known FP/TP patterns with IOC details (fallback: `../soc/memory/fp-patterns.md` + `../soc/memory/tp-patterns.md`)
 
 ### Delegation
 
@@ -329,7 +348,7 @@ If any agent fails, perform that step directly using the existing inline steps 3
 
 3. **Classification Checkpoint — answer ALL FOUR before classifying as FP:**
    1. What specific evidence supports this is benign? (not "it seems like" — cite fields, values, patterns)
-   2. Does this match a documented FP pattern in `../soc/memory/fp-patterns.md`? If yes, do the IOCs match exactly?
+   2. Does this match a documented FP pattern in `knowledge/patterns/<platform>.md`? If yes, do the IOCs match exactly?
    3. If this is a new pattern, have you verified with at least one enrichment query? (host_lookup, ngsiem_query, cloud_query_assets)
    4. Could an attacker produce this same telemetry intentionally? What would distinguish the malicious version?
 
@@ -455,21 +474,22 @@ If creating a case:
 
 If NOT creating a case: `update_alert_status(status="in_progress", comment="TP confirmed: <summary>", tags=["true_positive"])`
 
-### Update Memory
+### Update Knowledge Base
 
-After closing (FP or TP), update the appropriate memory files:
-- New FP pattern → `../soc/memory/fp-patterns.md`
-- New TP pattern → `../soc/memory/tp-patterns.md`
-- New hunting query → `../soc/memory/investigation-techniques.md`
-- New detection idea → `../soc/memory/detection-ideas.md`
+After closing (FP or TP), update the appropriate knowledge base files:
+- New FP pattern → `knowledge/patterns/<platform>.md` (False Positive Patterns section)
+- New TP pattern → `knowledge/patterns/<platform>.md` (True Positive Patterns section)
+- New hunting query → `knowledge/techniques/investigation-techniques.md`
+- New detection idea → `knowledge/ideas/detection-ideas.md`
+- Update `knowledge/INDEX.md` — refresh platform pattern counts, add to Recent TP Activity if TP
 
 ---
 
 ## Phase 5: Tune (`/soc tune <detection>`)
 
 ### Context Loaded
-- Read `../soc/memory/tuning-log.md` — past tuning decisions
-- Read `../soc/memory/tuning-backlog.md` — pending tuning work
+- Read `knowledge/tuning/tuning-log.md` — past tuning decisions (fallback: `../soc/memory/tuning-log.md`)
+- Read `knowledge/tuning/tuning-backlog.md` — pending tuning work (fallback: `../soc/memory/tuning-backlog.md`)
 - Read `../soc/tuning-bridge.md` — IOC → tuning pattern mapping
 
 ### Step 1: Find the Detection Template
@@ -541,7 +561,7 @@ Present the tuning proposal and **WAIT for approval**:
 2. Run `python scripts/resource_deploy.py validate-query --template <path>` to verify CQL syntax
 3. **Do NOT run `plan` locally** — CI/CD runs plan automatically on PR creation
 4. Update the alert: `update_alert_status(status="closed", comment="Tuned: <description>", tags=["false_positive", "tuned"])`
-5. Update `../soc/memory/tuning-log.md` with the decision
+5. Update `knowledge/tuning/tuning-log.md` with the decision
 
 ### Tuning Principles
 - **Prefer enrichment functions** over raw CQL exclusions
@@ -559,7 +579,7 @@ Batch processing mode that sequences phases efficiently for multiple alerts.
 ### Flow
 
 **Phase 1 runs once for all alerts:**
-1. Load context: `../soc/environmental-context.md` + `../soc/memory/fast-track-patterns.md`
+1. Load context: `knowledge/context/environmental-context.md` + `knowledge/INDEX.md` (Fast-Track section)
 2. Fetch alerts by product — **Delegation**: Dispatch `alert-formatter` agent (Haiku, silent) for steps 2-5.
 3. Assign triage depth tiers
 4. Present summary table
@@ -571,9 +591,9 @@ Batch processing mode that sequences phases efficiently for multiple alerts.
 - Report count and patterns matched.
 
 **Pattern-match candidates:**
-- Brief Phase 2: Load `../soc/memory/investigation-techniques.md`, call `alert_analysis`, verify key IOCs
+- Brief Phase 2: Load `knowledge/techniques/investigation-techniques.md`, call `alert_analysis`, verify key IOCs
 - **Delegation**: Dispatch `cql-query` agent for 1-2 targeted queries and `mcp-investigator` agent (abbreviated scope). No `evidence-summarizer` needed — pattern matches are classified inline by Opus.
-- Phase 3: Load `../soc/memory/fp-patterns.md`, confirm pattern match with IOC verification
+- Phase 3: Load `knowledge/patterns/<platform>.md`, confirm pattern match with IOC verification
 - Close with comment citing the matched pattern
 
 **Standard triage / Deep investigation:**
@@ -584,7 +604,7 @@ Batch processing mode that sequences phases efficiently for multiple alerts.
 - Phase 5 if tuning is needed
 
 **End of session:**
-- Update memory files with new patterns/findings
+- Update knowledge base files with new patterns/findings
 - Mark all tasks complete
 
 ---
@@ -592,12 +612,12 @@ Batch processing mode that sequences phases efficiently for multiple alerts.
 ## Hunt Mode (`/soc hunt`)
 
 1. User provides IOCs, a hypothesis, or a description of what to look for
-2. Load `../soc/memory/investigation-techniques.md` for query patterns and repo mapping
+2. Load `knowledge/techniques/investigation-techniques.md` for query patterns and repo mapping
 ### Delegation
 
 The existing steps 3-5 below can be delegated to agents (preferred path):
 
-a. **CQL queries**: Dispatch `cql-query` agent (Sonnet, visible). Provide the IOCs/hypothesis, `../soc/memory/investigation-techniques.md` content, and intent "Write hunting queries for these IOCs across relevant platforms." Present queries for user approval.
+a. **CQL queries**: Dispatch `cql-query` agent (Sonnet, visible). Provide the IOCs/hypothesis, `knowledge/techniques/investigation-techniques.md` content, and intent "Write hunting queries for these IOCs across relevant platforms." Present queries for user approval.
 
 b. **Execute queries**: Dispatch `mcp-investigator` agent (Sonnet, visible). Provide the approved queries. Agent executes and returns structured evidence.
 
@@ -617,13 +637,13 @@ Step 6 (escalation if TP) remains orchestrator-only. If agents fail, perform ste
 For operational questions about sensor activity, telemetry patterns, or infrastructure changes — not alert triage.
 
 1. User asks an operational question
-2. Load `../soc/memory/investigation-techniques.md` for repo mapping and field gotchas
+2. Load `knowledge/techniques/investigation-techniques.md` for repo mapping and field gotchas
 
 ### Delegation
 
 The existing steps 3-4 below can be delegated to agents (preferred path):
 
-a. **CQL queries**: Dispatch `cql-query` agent (Sonnet, visible). Provide the operational question, playbook content, and `../soc/memory/investigation-techniques.md` content. Present queries to user.
+a. **CQL queries**: Dispatch `cql-query` agent (Sonnet, visible). Provide the operational question, playbook content, and `knowledge/techniques/investigation-techniques.md` content. Present queries to user.
 
 b. **Execute queries**: Dispatch `mcp-investigator` agent (Sonnet, visible). Provide the queries. Agent executes and returns structured results.
 
@@ -666,19 +686,19 @@ When invoked with `--eval` or `--dry-run`, run the full triage workflow but **do
 
 ## Living Documents
 
-### Memory Files — Update After Every Triage Session
+### Knowledge Base Files — Update After Every Triage Session
 
 | File | Update With |
 |------|------------|
-| `../soc/memory/fp-patterns.md` | New FP patterns with specific IOCs |
-| `../soc/memory/tp-patterns.md` | Confirmed TP indicators |
-| `../soc/memory/investigation-techniques.md` | New query patterns, field discoveries, API quirks |
-| `../soc/memory/tuning-log.md` | Tuning decisions with dates and rationale |
-| `../soc/memory/tuning-backlog.md` | New tuning work items |
-| `../soc/memory/detection-ideas.md` | New detection concepts |
-| `../soc/memory/fast-track-patterns.md` | New bulk-close patterns (only when ALL 3 criteria met: 100% confidence, recurring, never TP) |
+| `knowledge/patterns/<platform>.md` | New FP/TP patterns with specific IOCs (platform-specific file) |
+| `knowledge/techniques/investigation-techniques.md` | New query patterns, field discoveries, API quirks |
+| `knowledge/tuning/tuning-log.md` | Tuning decisions with dates and rationale |
+| `knowledge/tuning/tuning-backlog.md` | New tuning work items |
+| `knowledge/ideas/detection-ideas.md` | New detection concepts |
+| `knowledge/INDEX.md` | Fast-track patterns (ALL 3 criteria met), platform pattern counts, recent TP activity |
+| `knowledge/metrics/detection-metrics.jsonl` | Per-alert disposition record (appended at Phase 4 closure) |
 
-### ../soc/environmental-context.md — Suggest Updates When New Context Is Learned
+### environmental-context.md — Suggest Updates When New Context Is Learned
 When investigation reveals new environmental information:
 - **Never modify silently.** Always propose changes to the user.
 - Format: `[SUGGESTED UPDATE] Section: <section name> | Change: <what to add/modify> | Evidence: <what you observed>`

@@ -15,7 +15,7 @@ You do NOT:
 The orchestrator provides:
 
 1. **Environmental context** — org baselines (inline text from `environmental-context.md`)
-2. **Fast-track patterns** — bulk-close patterns (inline text from `memory/fast-track-patterns.md`)
+2. **Fast-track patterns** — bulk-close patterns (inline text from `knowledge/INDEX.md` Fast-Track section)
 3. **Filter parameters:**
    - `product`: one of `ngsiem`, `endpoint`, `cloud_security`, `identity`, `thirdparty`, or `ALL`
    - `severity`: default `ALL`
