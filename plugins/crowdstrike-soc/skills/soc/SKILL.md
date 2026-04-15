@@ -93,21 +93,21 @@ At session start, check whether `knowledge/` exists in the working repo:
 
 1. Run `ls knowledge/INDEX.md` to check for the knowledge base
 2. **If `knowledge/` exists:** Use `knowledge/` paths for all living documents (see path table below)
-3. **If `knowledge/` does NOT exist:** Fall back to bundled `memory/` files in this skill directory. Inform the user: "No `knowledge/` directory found — using bundled templates. Run the talonctl knowledge base scaffold to enable persistent knowledge."
+3. **If `knowledge/` does NOT exist:** Inform the user: "No `knowledge/` directory found. Run the talonctl knowledge base scaffold to enable persistent knowledge."
 
 ### Path Resolution
 
-| Document | Primary Path (`knowledge/` exists) | Fallback Path |
-|---|---|---|
-| Fast-track patterns | `knowledge/INDEX.md` (Fast-Track section) | `memory/fast-track-patterns.md` |
-| Environmental context | `knowledge/context/environmental-context.md` | `environmental-context.md` |
-| Investigation techniques | `knowledge/techniques/investigation-techniques.md` | `memory/investigation-techniques.md` |
-| FP patterns | `knowledge/patterns/<platform>.md` | `memory/fp-patterns.md` |
-| TP patterns | `knowledge/patterns/<platform>.md` (TP section) | `memory/tp-patterns.md` |
-| Tuning log | `knowledge/tuning/tuning-log.md` | `memory/tuning-log.md` |
-| Tuning backlog | `knowledge/tuning/tuning-backlog.md` | `memory/tuning-backlog.md` |
-| Detection ideas | `knowledge/ideas/detection-ideas.md` | `memory/detection-ideas.md` |
-| Detection metrics | `knowledge/metrics/detection-metrics.jsonl` | (none — metrics only available with knowledge base) |
+| Document | Path |
+|---|---|
+| Fast-track patterns | `knowledge/INDEX.md` (Fast-Track section) |
+| Environmental context | `knowledge/context/environmental-context.md` |
+| Investigation techniques | `knowledge/techniques/investigation-techniques.md` |
+| FP patterns | `knowledge/patterns/<platform>.md` |
+| TP patterns | `knowledge/patterns/<platform>.md` (TP section) |
+| Tuning log | `knowledge/tuning/tuning-log.md` |
+| Tuning backlog | `knowledge/tuning/tuning-backlog.md` |
+| Detection ideas | `knowledge/ideas/detection-ideas.md` |
+| Detection metrics | `knowledge/metrics/detection-metrics.jsonl` |
 
 ## Triage Depth Tiers
 
@@ -125,8 +125,8 @@ Not every alert needs the same level of investigation. Tiers are assigned during
 ## Phase 1: Intake (`/soc daily`, `/soc intake`)
 
 ### Context Loaded
-- Read `knowledge/context/environmental-context.md` — org baselines, known accounts, infrastructure context (fallback: `environmental-context.md`)
-- Read `knowledge/INDEX.md` — routing table with fast-track patterns and platform file index (fallback: `memory/fast-track-patterns.md`)
+- Read `knowledge/context/environmental-context.md` — org baselines, known accounts, infrastructure context
+- Read `knowledge/INDEX.md` — routing table with fast-track patterns and platform file index
 
 ### NOT Loaded (Phase 1 boundary)
 - ~~`knowledge/patterns/<platform>.md`~~ — loaded at Phase 3 only (prevents confirmation bias)
@@ -173,7 +173,7 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
 ## Phase 2: Triage (`/soc triage <id>`)
 
 ### Context Loaded (additive)
-- Read `knowledge/techniques/investigation-techniques.md` — query patterns, field gotchas, **NGSIEM repo mapping table**, API quirks (fallback: `memory/investigation-techniques.md`)
+- Read `knowledge/techniques/investigation-techniques.md` — query patterns, field gotchas, **NGSIEM repo mapping table**, API quirks
 - Read the relevant **playbook** from `playbooks/` based on alert type routing:
   - `thirdparty:` prefix + EntraID source → `playbooks/entraid-signin-alert.md`
   - `ngsiem:` prefix + EntraID detection name → `playbooks/entraid-risky-signin.md`
@@ -265,7 +265,7 @@ Fast-track alerts can be closed directly from intake — no Phase 2/3 needed:
 ## Phase 3: Classify (`/soc classify <id>`)
 
 ### Context Loaded (additive)
-- Read `knowledge/patterns/<platform>.md` for the relevant platform — known FP/TP patterns with IOC details (fallback: `memory/fp-patterns.md` + `memory/tp-patterns.md`)
+- Read `knowledge/patterns/<platform>.md` for the relevant platform — known FP/TP patterns with IOC details
 
 ### Actions
 
@@ -466,8 +466,8 @@ Skip metrics append if `knowledge/metrics/detection-metrics.jsonl` does not exis
 ## Phase 5: Tune (`/soc tune <detection>`)
 
 ### Context Loaded
-- Read `knowledge/tuning/tuning-log.md` — past tuning decisions (fallback: `memory/tuning-log.md`)
-- Read `knowledge/tuning/tuning-backlog.md` — pending tuning work (fallback: `memory/tuning-backlog.md`)
+- Read `knowledge/tuning/tuning-log.md` — past tuning decisions
+- Read `knowledge/tuning/tuning-backlog.md` — pending tuning work
 - Read `tuning-bridge.md` — IOC → tuning pattern mapping
 
 ### Step 1: Find the Detection Template

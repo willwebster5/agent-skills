@@ -22,7 +22,7 @@ SOC v1 loads all context (environmental + memory + FP patterns) at session start
 
 **Context loaded:**
 - `environmental-context.md` — static org knowledge (accounts, users, infrastructure)
-- `knowledge/INDEX.md` (Fast-Track section) — high-confidence bulk-close patterns only (CWPP, Charlotte AI, HR platform provisioning) (fallback: `memory/fast-track-patterns.md`)
+- `knowledge/INDEX.md` (Fast-Track section) — high-confidence bulk-close patterns only (CWPP, Charlotte AI, HR platform provisioning)
 
 **NOT loaded:**
 - FP/TP pattern knowledge
@@ -40,7 +40,7 @@ SOC v1 loads all context (environmental + memory + FP patterns) at session start
 ### Phase 2: Triage (`/soc triage <alert-id>`)
 
 **Context loaded (additive):**
-- `knowledge/techniques/investigation-techniques.md` — query patterns, field gotchas, data source mappings (fallback: `memory/investigation-techniques.md`)
+- `knowledge/techniques/investigation-techniques.md` — query patterns, field gotchas, data source mappings
 - Relevant playbook based on alert type routing
 
 **NOT loaded:**
@@ -59,7 +59,7 @@ SOC v1 loads all context (environmental + memory + FP patterns) at session start
 ### Phase 3: Classify (`/soc classify <alert-id>`)
 
 **Context loaded (additive):**
-- `knowledge/patterns/<platform>.md` — known FP/TP patterns with IOC details (fallback: `memory/fp-patterns.md` + `memory/tp-patterns.md`)
+- `knowledge/patterns/<platform>.md` — known FP/TP patterns with IOC details
 
 **Actions:**
 - Compare collected evidence against memory patterns
@@ -82,7 +82,7 @@ SOC v1 loads all context (environmental + memory + FP patterns) at session start
 ### Phase 5: Tune (`/soc tune <detection>`)
 
 **Context loaded:**
-- `knowledge/tuning/tuning-log.md` — past tuning decisions (fallback: `memory/tuning-log.md`)
+- `knowledge/tuning/tuning-log.md` — past tuning decisions
 - `tuning-bridge.md` — IOC → tuning pattern mapping
 - Detection tuning skill context (AVAILABLE_FUNCTIONS.md, TUNING_PATTERNS.md)
 
@@ -96,16 +96,16 @@ SOC v1 loads all context (environmental + memory + FP patterns) at session start
 
 ## Knowledge Base File Layout
 
-Original `MEMORY.md` was split into memory files, now migrated to `knowledge/` paths with `memory/` fallback:
+Original `MEMORY.md` was split into memory files, now migrated to `knowledge/` paths:
 
-| Knowledge Path | Fallback | Contents | Loaded When |
-|---|---|---|---|
-| `knowledge/INDEX.md` (Fast-Track section) | `memory/fast-track-patterns.md` | CWPP noise, Charlotte AI signals, HR platform provisioning, Intune compliance drift | Phase 1 (intake) |
-| `knowledge/patterns/<platform>.md` | `memory/fp-patterns.md` + `memory/tp-patterns.md` | All known FP/TP patterns with IOC signatures | Phase 3 (classify) |
-| `knowledge/tuning/tuning-log.md` | `memory/tuning-log.md` | Tuning decisions with dates + rationale | Phase 5 (tune) |
-| `knowledge/techniques/investigation-techniques.md` | `memory/investigation-techniques.md` | Query patterns, field gotchas, repo mappings, API quirks | Phase 2 (triage) |
-| `knowledge/ideas/detection-ideas.md` | `memory/detection-ideas.md` | Future detection concepts | On demand |
-| `knowledge/tuning/tuning-backlog.md` | `memory/tuning-backlog.md` | Pending tuning work | Phase 5 (tune) |
+| Knowledge Path | Contents | Loaded When |
+|---|---|---|
+| `knowledge/INDEX.md` (Fast-Track section) | CWPP noise, Charlotte AI signals, HR platform provisioning, Intune compliance drift | Phase 1 (intake) |
+| `knowledge/patterns/<platform>.md` | All known FP/TP patterns with IOC signatures | Phase 3 (classify) |
+| `knowledge/tuning/tuning-log.md` | Tuning decisions with dates + rationale | Phase 5 (tune) |
+| `knowledge/techniques/investigation-techniques.md` | Query patterns, field gotchas, repo mappings, API quirks | Phase 2 (triage) |
+| `knowledge/ideas/detection-ideas.md` | Future detection concepts | On demand |
+| `knowledge/tuning/tuning-backlog.md` | Pending tuning work | Phase 5 (tune) |
 
 ## Eval Scenarios
 
@@ -155,7 +155,7 @@ Original `MEMORY.md` was split into memory files, now migrated to `knowledge/` p
 
 | Step | Status | Notes |
 |------|--------|-------|
-| Split MEMORY.md into memory files | Done | Migrated to `knowledge/` paths with `memory/` fallback — see Knowledge Base File Layout above |
+| Split MEMORY.md into memory files | Done | Migrated to `knowledge/` paths — see Knowledge Base File Layout above |
 | Rewrite SKILL.md as phase dispatcher | Done | 5 phases + daily/hunt/investigate modes, all v1 capabilities preserved |
 | Add repo mapping to investigation-techniques.md | Done | 8 platforms mapped, field gotchas table added |
 | Add "verify deployed state" to Phase 5 | Done | Step 2 in Phase 5 — required before proposing tuning |
