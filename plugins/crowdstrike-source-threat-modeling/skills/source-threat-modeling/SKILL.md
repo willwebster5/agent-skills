@@ -189,6 +189,25 @@ For each validated threat scenario, create a backlog entry:
 | **Volume estimate** | Events/day from log validation |
 | **Recommended skill** | Which authoring skill should build this |
 
+### ADS Skeleton for Each Detection
+
+For each detection in the backlog, generate a skeleton `ads:` block to include in the handoff document:
+
+```yaml
+ads:
+  goal: "<derived from the threat model's attack description>"
+  mitre_attack:
+    - "<from the MITRE mapping in the threat model>"
+  blind_spots:
+    - "TBD — populate after first triage"
+  validation:
+    - "TBD — populate after first triage"
+  ads_created: "YYYY-MM-DD"
+  ads_author: "source-threat-modeling"
+```
+
+Include this skeleton in each handoff document under a `### ADS Metadata` section, after the Context table and before the Key Event Types section.
+
 ### Skill routing
 
 | Detection Approach | Route To | Why |
@@ -234,6 +253,23 @@ Author a detection for: <threat scenario one-liner>
 | MITRE tactic | <tactic> |
 | Detection approach | <simple / threshold / behavioral> |
 | Estimated severity | <Critical / High / Medium / Low> |
+
+### ADS Metadata
+
+Include in the detection template's `ads:` block:
+
+```yaml
+ads:
+  goal: "<one-sentence detection goal from threat scenario>"
+  mitre_attack:
+    - "<Tactic / Technique (ID)>"
+  blind_spots:
+    - "TBD — populate after first triage"
+  validation:
+    - "TBD — populate after first triage"
+  ads_created: "<today>"
+  ads_author: "source-threat-modeling"
+```
 
 ### Key Event Types
 
