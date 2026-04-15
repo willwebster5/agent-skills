@@ -1,6 +1,6 @@
 {
   "name": "crowdstrike-cql-patterns",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Curated CQL detection engineering pattern catalog for CrowdStrike NG-SIEM — correlation, enrichment, aggregation, scoring, baselining, and more.",
   "author": {
     "name": "Will Webster"
