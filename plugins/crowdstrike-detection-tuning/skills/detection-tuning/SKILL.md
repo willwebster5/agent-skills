@@ -405,6 +405,46 @@ operation:
     definition: '@every 15m'
 ```
 
+### ADS Metadata Updates During Tuning
+
+When the detection template has an `ads:` block, update the following fields as part of the tuning change:
+
+1. **Append new FP patterns to `ads.false_positives`:**
+   ```yaml
+   false_positives:
+     # ... existing entries ...
+     - pattern: "<new FP pattern from this tuning>"
+       characteristics: "<IOCs that identify this pattern>"
+       tuning: "<what filter/enrichment was applied>"
+       status: "tuned"
+   ```
+
+2. **Update `ads.strategy_abstract`** if enrichment functions were added or the detection logic changed meaningfully. Append a note about the new enrichment, don't rewrite from scratch.
+
+3. **Update `ads.blind_spots`** if the tuning introduces new limitations (e.g., "Excludes all activity from service account X" means attacks using that account are now blind).
+
+4. **Set date and author fields:**
+   ```yaml
+   ads_updated: "YYYY-MM-DD"  # Today's date
+   ads_author: "detection-tuning"
+   ```
+
+5. **Append a structured entry to `knowledge/tuning/tuning-log.md`** after every tuning action:
+
+   ```markdown
+   ## YYYY-MM-DD — <resource_id>
+
+   **Trigger:** <what prompted the tuning — FP rate, specific pattern, alert composite IDs>
+   **Change:** <summary of what was modified>
+   **Before:** `<before CQL snippet or config>`
+   **After:** `<after CQL snippet or config>`
+   **Alerts:** [<composite_ids that triggered this>]
+   **Validation:** <validate-query result, plan output>
+   **PR:** #<number>
+   ```
+
+If the detection template does NOT have an `ads:` block, do not add one during tuning — ADS backfill happens during triage (Phase 4 of the SOC skill).
+
 ### Step 5: Behavioral Rule Tuning (for correlate() rules)
 
 For behavioral rules using `correlate()`, additional tuning considerations apply:
