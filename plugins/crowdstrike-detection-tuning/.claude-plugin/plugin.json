@@ -1,6 +1,6 @@
 {
   "name": "crowdstrike-detection-tuning",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Analyze and tune CrowdStrike NGSIEM detections for false positive reduction using 38 enrichment functions across AWS, EntraID, GitHub, and network data sources.",
   "author": {
     "name": "Will Webster"

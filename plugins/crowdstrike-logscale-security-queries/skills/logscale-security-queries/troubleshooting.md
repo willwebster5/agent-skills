@@ -639,7 +639,7 @@ When you get `INVALID: Syntax error: Unknown error`, the error is often in a fun
 **Step 1: Stash changes and validate original**
 ```bash
 git stash
-python scripts/resource_deploy.py validate-query --template <path>
+talonctl validate-query --template <path>
 git stash pop
 ```
 If original validates, the error is in your changes.
@@ -647,13 +647,13 @@ If original validates, the error is in your changes.
 **Step 2: Test individual components with inline queries**
 ```bash
 # Test defineTable
-python scripts/resource_deploy.py validate-query --query 'defineTable(query={...}, ...) | #Vendor="aws"'
+talonctl validate-query --query 'defineTable(query={...}, ...) | #Vendor="aws"'
 
 # Test function calls
-python scripts/resource_deploy.py validate-query --query '#Vendor="aws" | $my_function()'
+talonctl validate-query --query '#Vendor="aws" | $my_function()'
 
 # Test groupBy syntax
-python scripts/resource_deploy.py validate-query --query '#Vendor="aws" | groupBy([field], function=[count()])'
+talonctl validate-query --query '#Vendor="aws" | groupBy([field], function=[count()])'
 ```
 
 **Step 3: Binary search the query**
@@ -667,11 +667,11 @@ python scripts/resource_deploy.py validate-query --query '#Vendor="aws" | groupB
 **Step 4: Test specific syntax patterns**
 ```bash
 # Test named aggregation (often the problem)
-python scripts/resource_deploy.py validate-query --query '#Vendor="aws" | groupBy([x], function=[myName := count()])'
+talonctl validate-query --query '#Vendor="aws" | groupBy([x], function=[myName := count()])'
 # ❌ INVALID - := not allowed in groupBy
 
 # Test unnamed
-python scripts/resource_deploy.py validate-query --query '#Vendor="aws" | groupBy([x], function=[count()])'
+talonctl validate-query --query '#Vendor="aws" | groupBy([x], function=[count()])'
 # ✅ VALID
 ```
 

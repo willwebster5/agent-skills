@@ -714,10 +714,10 @@ ls resources/saved_searches/
 
 ```bash
 # Validate query from template file
-python scripts/resource_deploy.py validate-query --template <path>
+talonctl validate-query --template <path>
 
 # Validate inline query directly
-python scripts/resource_deploy.py validate-query --query '<cql_query>'
+talonctl validate-query --query '<cql_query>'
 ```
 
 ### Validation Output
@@ -874,10 +874,10 @@ After validation passes, test the full deployment:
 
 ```bash
 # Plan without applying (safe, read-only)
-python scripts/resource_deploy.py plan --resources=detection
+talonctl plan --resources=detection
 
 # Validate all templates
-python scripts/resource_deploy.py validate
+talonctl validate
 ```
 
 ## Important Notes
@@ -900,7 +900,7 @@ When tuning requires a new saved search function (not in [AVAILABLE_FUNCTIONS.md
 1. **Create the function** in `resources/saved_searches/`
 2. **Deploy the function FIRST** before using it in detections:
    ```bash
-   python scripts/resource_deploy.py apply --resources=saved_search --names="<function_name>" --auto-approve
+   talonctl apply --resources=saved_search --names="<function_name>" --auto-approve
    ```
 3. **Then validate** detections that use the new function - validation calls the LogScale API which requires the function to exist
 4. **Update documentation** in `AVAILABLE_FUNCTIONS.md` with the new function

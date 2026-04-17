@@ -281,13 +281,13 @@ When creating or modifying detection templates, **always validate queries before
 
 ```bash
 # Validate query from a detection template
-python scripts/resource_deploy.py validate-query --template <path/to/detection.yaml>
+talonctl validate-query --template <path/to/detection.yaml>
 
 # Validate inline query
-python scripts/resource_deploy.py validate-query --query '#Vendor="sase" | count()'
+talonctl validate-query --query '#Vendor="sase" | count()'
 
 # Validate query from file
-python scripts/resource_deploy.py validate-query --file /tmp/query.txt
+talonctl validate-query --file /tmp/query.txt
 ```
 
 ### Output
@@ -297,14 +297,14 @@ python scripts/resource_deploy.py validate-query --file /tmp/query.txt
 ### AI Workflow for Detection Development
 
 1. **Write the detection template** with `search.filter` query
-2. **Run validation**: `python scripts/resource_deploy.py validate-query --template <path>`
+2. **Run validation**: `talonctl validate-query --template <path>`
 3. **If INVALID**, review the query for common CQL issues:
    - Case statement syntax (missing `test()`, missing default branch `*`)
    - Incorrect use of `if()` function (use `case` statements instead)
    - AND/OR operators in case conditions (use composite keys)
    - Comparison operators without `test()` wrapper
 4. **Fix and re-validate** until `VALID`
-5. **Run full plan**: `python scripts/resource_deploy.py plan --resources=detection`
+5. **Run full plan**: `talonctl plan --resources=detection`
 
 ### Common Validation Failures
 
@@ -323,11 +323,11 @@ When you get `INVALID: Syntax error: Unknown error`, isolate the problem:
 
 ```bash
 # 1. Stash changes, validate original
-git stash && python scripts/resource_deploy.py validate-query --template <path>
+git stash && talonctl validate-query --template <path>
 git stash pop
 
 # 2. Test individual syntax patterns
-python scripts/resource_deploy.py validate-query --query '#Vendor="aws" | groupBy([x], function=[count()])'
+talonctl validate-query --query '#Vendor="aws" | groupBy([x], function=[count()])'
 
 # 3. Binary search - comment out half the query and validate
 ```

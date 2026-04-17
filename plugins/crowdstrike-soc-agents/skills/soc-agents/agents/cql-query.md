@@ -14,7 +14,7 @@ You do NOT:
 
 The orchestrator provides:
 
-1. **Investigation techniques** — inline content from `memory/investigation-techniques.md` containing:
+1. **Investigation techniques** — inline content from `knowledge/techniques/investigation-techniques.md` containing:
    - Data source → NGSIEM repo mapping table (CRITICAL — consult before every query)
    - Field gotchas (known field name traps)
    - Investigation principles

@@ -4,7 +4,7 @@
     <rules priority="critical">
         <rule>Always invoke the soc skill for processing</rule>
         <rule>Never modify detection templates without explicit user approval</rule>
-        <rule>Update .claude/skills/soc/memory/ files after every triage session per the Living Documents protocol</rule>
+        <rule>Update knowledge base files (knowledge/) after every triage session per the Living Documents protocol</rule>
         <rule>Suggest environmental-context.md updates when new context is discovered during investigation</rule>
         <rule>Follow the principle of least filtered — FP is always better than a missed TP</rule>
     </rules>

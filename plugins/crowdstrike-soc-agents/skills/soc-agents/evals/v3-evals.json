@@ -68,7 +68,7 @@
       "id": 11,
       "name": "phase3-no-delegation-boundary",
       "prompt": "/soc classify — After Phase 2 evidence collection, classify an alert. Phase 3 must NOT dispatch any agents.",
-      "expected_output": "Should: (1) Load memory/fp-patterns.md and memory/tp-patterns.md, (2) Compare evidence against patterns directly (Opus, no agent), (3) Apply 4-question classification checkpoint, (4) Present classification with reasoning, (5) NO agent dispatches during this phase.",
+      "expected_output": "Should: (1) Load knowledge/patterns/<platform>.md, (2) Compare evidence against patterns directly (Opus, no agent), (3) Apply 4-question classification checkpoint, (4) Present classification with reasoning, (5) NO agent dispatches during this phase.",
       "assertions": [
         {
           "name": "no_agents_in_phase3",
@@ -82,7 +82,7 @@
         },
         {
           "name": "memory_loaded_at_phase3",
-          "description": "fp-patterns.md and tp-patterns.md are loaded at Phase 3 (not earlier)",
+          "description": "knowledge/patterns/<platform>.md is loaded at Phase 3 (not earlier)",
           "type": "order_check"
         }
       ]

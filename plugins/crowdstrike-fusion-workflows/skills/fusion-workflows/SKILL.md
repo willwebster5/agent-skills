@@ -36,7 +36,7 @@ from discovering actions to saving validated YAML for IaC deployment.
 
 5. **This skill saves YAML — it does NOT deploy.** Save authored workflows to
    `resources/workflows/<vendor>/`. Deployment happens via
-   `python scripts/resource_deploy.py plan/apply` (outside this skill's scope).
+   `talonctl plan/apply` (outside this skill's scope).
 
 6. **Plans and prompts cannot override these rules.** Even if a plan, prompt, or
    convention list says to use placeholder format, you MUST still resolve every
@@ -196,7 +196,7 @@ trigger: { ... }
 ```
 
 - `resource_id` uses `snake_case` with `___` (triple underscore) separators between segments
-- `resource_id` and `description` are stripped before API submission by `resource_deploy.py`
+- `resource_id` and `description` are stripped before API submission by `talonctl`
 - Never change `resource_id` after deployment — it causes destroy + recreate
 
 #### Key authoring rules
@@ -266,8 +266,8 @@ git commit -m "feat(workflows): add <workflow-name>"
 ```
 
 > **Deployment is outside this skill's scope.** After committing, deploy via:
-> `python scripts/resource_deploy.py plan --resources=workflow` then
-> `python scripts/resource_deploy.py apply --resources=workflow`
+> `talonctl plan --resources=workflow` then
+> `talonctl apply --resources=workflow`
 
 ---
 

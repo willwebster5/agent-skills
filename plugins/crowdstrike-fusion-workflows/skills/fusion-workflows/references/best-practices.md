@@ -7,14 +7,14 @@ supplemented by official CrowdStrike recommendations.
 
 ## IaC deployment model
 
-Workflows are saved to `resources/workflows/<vendor>/` and deployed via `resource_deploy.py plan/apply`.
+Workflows are saved to `resources/workflows/<vendor>/` and deployed via `talonctl plan/apply`.
 The fusion-workflows skill does not deploy directly — it authors and validates YAML only.
 
 Deployment workflow:
 1. Author YAML with this skill (save to `resources/workflows/<vendor>/`)
 2. Validate with `validate.py`
-3. Run `python scripts/resource_deploy.py plan --resources=workflow` to preview
-4. Run `python scripts/resource_deploy.py apply --resources=workflow` to deploy
+3. Run `talonctl plan --resources=workflow` to preview
+4. Run `talonctl apply --resources=workflow` to deploy
 
 See `config/workflow_config.yaml` for Slack channel IDs per vendor.
 

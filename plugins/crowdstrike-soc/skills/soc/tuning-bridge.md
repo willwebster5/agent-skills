@@ -109,8 +109,8 @@ dependencies:                           # Saved searches this detection uses
 ## Validation Workflow
 
 After editing a detection template:
-1. `python scripts/resource_deploy.py validate-query --template <path>` — must return VALID
-2. `python scripts/resource_deploy.py plan --resources=detection` — must show UPDATE (not CREATE/DELETE)
+1. `talonctl validate-query --template <path>` — must return VALID
+2. `talonctl plan --resources=detection` — must show UPDATE (not CREATE/DELETE)
 3. If plan shows DELETE + CREATE, the `resource_id` may have changed — fix it
 
 ## Reference
