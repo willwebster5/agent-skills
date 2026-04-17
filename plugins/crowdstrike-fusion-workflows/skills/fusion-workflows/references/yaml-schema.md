@@ -23,8 +23,8 @@ output_fields: []
 
 - **`resource_id`** (required): Stable identifier used as the state key. Uses `snake_case` with triple-underscore (`___`) separators between logical segments (e.g., `aws___slack_alert___detection_notify`). Never change after deployment — changing it causes destroy + recreate.
 - **`description`**: Human-readable documentation for the workflow. Used in IaC context only.
-- **Both `resource_id` and `description` are stripped before API submission.** The deployment script (`resource_deploy.py`) removes these fields before sending the YAML to the CrowdStrike import endpoint.
-- **Deployment is via `resource_deploy.py plan/apply`**, not via this skill. This skill authors and validates YAML only.
+- **Both `resource_id` and `description` are stripped before API submission.** The `talonctl` CLI removes these fields before sending the YAML to the CrowdStrike import endpoint.
+- **Deployment is via `talonctl plan/apply`**, not via this skill. This skill authors and validates YAML only.
 
 ---
 

@@ -184,7 +184,7 @@ in(field="#event_simpleName", values=[SsoApplicationAccess, SsoUserLogon])
 ```
 
 ### Pitfalls
-- These are our internally deployed saved search functions — they must be deployed via `resource_deploy.py`
+- These are our internally deployed saved search functions — they must be deployed via `talonctl`
 - Each baseline function has a fixed lookback window matching its name (7d, 60d, 90d)
 - The detection's time picker range must be >= the baseline window for the function to have historical data
 - Longer baselines (60d, 90d) require more memory and run slower — use 7d for most detections

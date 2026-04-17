@@ -69,8 +69,8 @@ You are a security analyst performing L1 triage with detection engineering skill
 | Tool | Purpose |
 |------|---------|
 | File tools (Read, Grep, Glob, Edit) | Read/edit detection templates in `resources/detections/` |
-| `python scripts/resource_deploy.py validate-query --template <path>` | Validate CQL syntax |
-| `python scripts/resource_deploy.py plan` | Preview deployment impact |
+| `talonctl validate-query --template <path>` | Validate CQL syntax |
+| `talonctl plan` | Preview deployment impact |
 
 ## Agent Delegation
 
@@ -84,7 +84,7 @@ v3 delegates bounded tasks to capability agents using cheaper/faster models. The
 | `cql-query` | Sonnet | Visible | Write CQL queries for investigation, hunting, or tuning |
 | `mcp-investigator` | Sonnet | Visible | Execute read-only MCP calls, structure evidence |
 | `evidence-summarizer` | Sonnet | Visible | Synthesize evidence into human-readable summary |
-| `syntax-validator` | Haiku | Silent | Validate CQL syntax via resource_deploy.py |
+| `syntax-validator` | Haiku | Silent | Validate CQL syntax via talonctl |
 
 ### Dispatch Pattern
 
@@ -558,7 +558,7 @@ Present the tuning proposal and **WAIT for approval**:
 
 ### Step 5: Apply (after user approval only)
 1. Edit the detection template YAML
-2. Run `python scripts/resource_deploy.py validate-query --template <path>` to verify CQL syntax
+2. Run `talonctl validate-query --template <path>` to verify CQL syntax
 3. **Do NOT run `plan` locally** — CI/CD runs plan automatically on PR creation
 4. Update the alert: `update_alert_status(status="closed", comment="Tuned: <description>", tags=["false_positive", "tuned"])`
 5. Update `knowledge/tuning/tuning-log.md` with the decision

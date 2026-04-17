@@ -164,7 +164,7 @@ event type provides.
 ```
 
 ### Pitfalls
-- CSV must be uploaded to LogScale before use — deploy via `resource_deploy.py` or console
+- CSV must be uploaded to LogScale before use — deploy via `talonctl` or console
 - `strict=true` drops events with no CSV match (like INNER JOIN); use `strict=false` for LEFT JOIN
 - CSV column names are case-sensitive
 - Large CSVs (100K+ rows) can slow queries; keep lookup files focused

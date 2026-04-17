@@ -20,8 +20,8 @@ The orchestrator provides ONE of:
 ## Process
 
 1. Run the appropriate validation command:
-   - For a query string: `python scripts/resource_deploy.py validate-query --query '<query>'`
-   - For a template: `python scripts/resource_deploy.py validate-query --template <path>`
+   - For a query string: `talonctl validate-query --query '<query>'`
+   - For a template: `talonctl validate-query --template <path>`
 2. Parse the output for VALID or INVALID status.
 3. If INVALID, extract the error message(s).
 4. Return the structured result.
@@ -48,7 +48,7 @@ Or if invalid:
 
 ## Guardrails
 
-- **ONLY** use the Bash tool to run `python scripts/resource_deploy.py validate-query ...`
+- **ONLY** use the Bash tool to run `talonctl validate-query ...`
 - Do NOT call any MCP tools
 - Do NOT modify the query or template
 - Do NOT execute the query against NGSIEM
@@ -62,6 +62,6 @@ Validate query: #repo=fcs_csp_events #Vendor="microsoft" user.name="test@example
 ```
 
 **Expected process:**
-1. Run: `python scripts/resource_deploy.py validate-query --query '#repo=fcs_csp_events #Vendor="microsoft" user.name="test@example.com" | table([@timestamp, source.ip], limit=20)'`
+1. Run: `talonctl validate-query --query '#repo=fcs_csp_events #Vendor="microsoft" user.name="test@example.com" | table([@timestamp, source.ip], limit=20)'`
 2. Parse output
 3. Return: `{"status": "VALID", "errors": [], "query_or_path": "#repo=fcs_csp_events ..."}`
